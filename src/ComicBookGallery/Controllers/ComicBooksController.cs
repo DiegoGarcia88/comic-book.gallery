@@ -4,14 +4,22 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ComicBookGallery.Models;
+using ComicBookGallery.Data;
 
 namespace ComicBookGallery.Controllers
 {
     public class ComicBooksController: Controller
     {
-        public ActionResult Detail()
+        private ComicBookRepository _comicBookRepository = null;
+
+        public ComicBooksController()
         {
-            
+            _comicBookRepository = new ComicBookRepository();
+        }
+
+        public ActionResult Detail(int?/*makes it nullable if not provided*/ id)
+        {
+            #region Redirect result y ContentResult comentados
             /*if (DateTime.Today.DayOfWeek == DayOfWeek.Monday)
             {
                 return new RedirectResult("/");
@@ -34,7 +42,13 @@ namespace ComicBookGallery.Controllers
                 "Colors: Edgar Delgado",
                 "Letters: Chris Eliopoulos"
             };*/
-            return View();
+            #endregion
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+            var comicBook = _comicBookRepository.GetComicBook(id.Value/*You can also cast it instead*/);
+            return View(comicBook);
         }
     }
 
